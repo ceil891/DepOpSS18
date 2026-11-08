@@ -1,0 +1,22 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: storex-logging-service
+
+logging:
+  level:
+    root: INFO
+    # Mức log mặc định ban đầu là INFO (Bài tập 1)
+    com.storex.payment: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        # BÀI TẬP 1: Bổ sung "loggers" để cho phép thay đổi log level động qua HTTP REST
+        include: health,info,loggers
+  endpoint:
+    loggers:
+      enabled: true

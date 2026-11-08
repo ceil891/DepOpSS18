@@ -1,0 +1,93 @@
+{
+  "info": {
+    "name": "SS18 - Bai Tap 1: Dynamic Log Level Actuator",
+    "_postman_id": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+    "description": "Bộ request Postman dùng để kiểm tra và thay đổi Log Level động qua Spring Boot Actuator",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Lấy thông tin Log Level hiện tại của com.storex.payment",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/actuator/loggers/com.storex.payment",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["actuator", "loggers", "com.storex.payment"]
+        }
+      }
+    },
+    {
+      "name": "2. Đổi Log Level sang DEBUG (Không cần Restart)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"configuredLevel\": \"DEBUG\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/actuator/loggers/com.storex.payment",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["actuator", "loggers", "com.storex.payment"]
+        }
+      }
+    },
+    {
+      "name": "3. Gọi API Payment để kích hoạt Log DEBUG",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"orderId\": \"ORD-9988\",\n  \"amount\": 1500000,\n  \"paymentMethod\": \"VNPAY\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/payment/process",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "payment", "process"]
+        }
+      }
+    },
+    {
+      "name": "4. Khôi phục lại Log Level về INFO sau khi gỡ lỗi",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"configuredLevel\": \"INFO\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/actuator/loggers/com.storex.payment",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["actuator", "loggers", "com.storex.payment"]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Pattern Console có tích hợp biến MDC: %X{requestId} -->
+    <!-- Cú pháp %X{requestId:-NO-REQ-ID} sẽ in giá trị requestId trong MDC, nếu null thì in NO-REQ-ID -->
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{requestId:-NO-REQ-ID}] %-5level %logger{36} - %msg%n" />
+
+    <!-- 1. Console Appender -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 2. File Appender ghi nhận MDC -->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/app-mdc.log</file>
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </root>
+
+</configuration>

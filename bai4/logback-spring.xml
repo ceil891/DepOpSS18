@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{requestId:-SYSTEM}] %-5level %logger{36} - %msg%n" />
+    <property name="LOG_DIR" value="logs" />
+
+    <!-- 1. Console Appender -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 2. RollingFileAppender - GIẢI PHÁP CHỐNG TRÀN Ổ CỨNG TOÀN DIỆN -->
+    <!-- ĐÃ SỬA: Thay thế FileAppender bằng RollingFileAppender kết hợp SizeAndTimeBasedRollingPolicy -->
+    <appender name="ROLLING_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- Đường dẫn file log hiện tại đang được ghi trực tiếp -->
+        <file>${LOG_DIR}/application.log</file>
+
+        <!-- Chính sách xoay vòng kết hợp THỜI GIAN (theo ngày) và KÍCH THƯỚC (10MB) -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- Mẫu tên file lưu trữ khi xoay vòng:
+                 %d{yyyy-MM-dd}: Xoay vòng theo ngày
+                 %i: Chỉ số thứ tự của file trong ngày (0, 1, 2...)
+                 .gz: Tự động nén GZIP file cũ giúp tiết kiệm tới 90% dung lượng ổ cứng
+            -->
+            <fileNamePattern>${LOG_DIR}/application-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+
+            <!-- YÊU CẦU 1: Giới hạn kích thước mỗi file tối đa 10MB -->
+            <maxFileSize>10MB</maxFileSize>
+
+            <!-- YÊU CẦU 2: Giữ lịch sử log tối đa trong vòng 30 ngày (tự động xóa log cũ hơn) -->
+            <maxHistory>30</maxHistory>
+
+            <!-- CHỐT CHẶN BẢO HIỂM: Tổng dung lượng toàn bộ thư mục log không được vượt quá 3GB -->
+            <!-- Nếu đợt cao điểm vượt 3GB, Logback tự động xóa các file cũ nhất để bảo vệ đĩa -->
+            <totalSizeCap>3GB</totalSizeCap>
+
+            <!-- Dọn dẹp log quá hạn ngay khi ứng dụng khởi động -->
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="ROLLING_FILE" />
+    </root>
+
+</configuration>

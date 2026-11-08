@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{requestId:-SYSTEM}] %-5level %logger{36} - %msg%n" />
+
+    <!-- 1. Console Appender -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 2. Custom Discord Webhook Appender -->
+    <!-- Tự động bắn tin nhắn đỏ lên kênh Discord khi có log ERROR -->
+    <appender name="DISCORD" class="com.storex.logging.appender.DiscordAppender">
+        <!-- Đọc Webhook URL từ biến môi trường, có giá trị mặc định để test -->
+        <webhookUrl>${DISCORD_WEBHOOK_URL:-https://discord.com/api/webhooks/dummy/url}</webhookUrl>
+        <applicationName>StoreX-ECommerce</applicationName>
+    </appender>
+
+    <!-- 3. Bọc qua AsyncAppender để gia tăng thêm một lớp đệm hàng đợi (Queue) -->
+    <appender name="ASYNC_DISCORD" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="DISCORD" />
+        <queueSize>1024</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <neverBlock>true</neverBlock>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="ASYNC_DISCORD" />
+    </root>
+
+</configuration>

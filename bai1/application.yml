@@ -1,0 +1,22 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: storex-payment-service
+
+logging:
+  level:
+    root: INFO
+    # Mức log ban đầu trên Production là INFO (không in log DEBUG)
+    com.storex.payment: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        # ĐÃ SỬA: Bổ sung endpoint "loggers" để cho phép truy vấn và thay đổi log level động qua HTTP REST
+        include: health,info,loggers
+  endpoint:
+    loggers:
+      enabled: true
